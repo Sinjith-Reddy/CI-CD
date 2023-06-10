@@ -1,5 +1,6 @@
 pipeline {
   agent {
+    //docker container as a agent
     docker {
       image 'maven:latest'
       args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
@@ -7,10 +8,12 @@ pipeline {
   }
   stages {
     stage('Checkout') {
+    //cloning the repo this may not be required as Jenkinsfile is present in this repo Jenkins wld hae already cloned it.
       steps {
-        git branch: 'main', url: 'https://github.com/Sinjith-Reddy/CI-CD.git'
+        git branch: 'main', url: 'https://github.com/Sinjith-Reddy/springboot-complete-CI-CD-pipeline.git'
       }
     }
+
     stage('Build and Test') {
       steps {
         // build the project and create a JAR file
@@ -19,7 +22,7 @@ pipeline {
     }
     stage('Static Code Analysis') {
       environment {
-        SONAR_URL = "http://34.125.84.166/:9000"   //SonarQube server URL
+        SONAR_URL = "http://34.125.84.166:9000"   //SonarQube server URL
       }
       steps {
         withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
